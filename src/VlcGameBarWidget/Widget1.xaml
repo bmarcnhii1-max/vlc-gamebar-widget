@@ -213,7 +213,6 @@
                             FontSize="10.5"
                             Foreground="#8CFFFFFF"
                             IsTextScaleFactorEnabled="False"
-                            Text="Подключение…"
                             VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel
@@ -221,15 +220,15 @@
                         Orientation="Horizontal"
                         Spacing="2">
                         <Button
+                            x:Name="PlaylistToggleButton"
                             Click="PlaylistToggle_Click"
-                            Style="{StaticResource IconButtonStyle}"
-                            ToolTipService.ToolTip="Плейлист">
+                            Style="{StaticResource IconButtonStyle}">
                             <FontIcon FontSize="13" Glyph="&#xE8FD;" />
                         </Button>
                         <Button
+                            x:Name="SettingsButton"
                             Click="OpenSettings_Click"
-                            Style="{StaticResource IconButtonStyle}"
-                            ToolTipService.ToolTip="Настройки">
+                            Style="{StaticResource IconButtonStyle}">
                             <FontIcon FontSize="13" Glyph="&#xE713;" />
                         </Button>
                     </StackPanel>
@@ -244,7 +243,6 @@
                         Foreground="#F2FFFFFF"
                         IsTextScaleFactorEnabled="False"
                         MaxLines="2"
-                        Text="Ничего не воспроизводится"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="Wrap" />
                     <TextBlock
@@ -308,32 +306,31 @@
                     Orientation="Horizontal"
                     Spacing="5">
                     <Button
+                        x:Name="PreviousButton"
                         Click="Previous_Click"
-                        Style="{StaticResource TransportButtonStyle}"
-                        ToolTipService.ToolTip="Предыдущий">
+                        Style="{StaticResource TransportButtonStyle}">
                         <FontIcon FontSize="14" Glyph="&#xE100;" />
                     </Button>
                     <Button
+                        x:Name="Back10Button"
                         Click="Back10_Click"
                         Content="−10"
-                        Style="{StaticResource JumpButtonStyle}"
-                        ToolTipService.ToolTip="Назад 10 секунд" />
+                        Style="{StaticResource JumpButtonStyle}" />
                     <Button
                         x:Name="PlayButton"
                         Click="PlayPause_Click"
-                        Style="{StaticResource PlayButtonStyle}"
-                        ToolTipService.ToolTip="Пауза / Играть">
+                        Style="{StaticResource PlayButtonStyle}">
                         <FontIcon x:Name="PlayIcon" FontSize="16" Glyph="&#xE768;" />
                     </Button>
                     <Button
+                        x:Name="Forward10Button"
                         Click="Forward10_Click"
                         Content="+10"
-                        Style="{StaticResource JumpButtonStyle}"
-                        ToolTipService.ToolTip="Вперёд 10 секунд" />
+                        Style="{StaticResource JumpButtonStyle}" />
                     <Button
+                        x:Name="NextButton"
                         Click="Next_Click"
-                        Style="{StaticResource TransportButtonStyle}"
-                        ToolTipService.ToolTip="Следующий">
+                        Style="{StaticResource TransportButtonStyle}">
                         <FontIcon FontSize="14" Glyph="&#xE101;" />
                     </Button>
                 </StackPanel>
@@ -346,11 +343,11 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Button
+                        x:Name="MuteButton"
                         Width="26"
                         Height="26"
                         Click="Mute_Click"
-                        Style="{StaticResource IconButtonStyle}"
-                        ToolTipService.ToolTip="Выключить звук">
+                        Style="{StaticResource IconButtonStyle}">
                         <FontIcon x:Name="MuteIcon" FontSize="13" Glyph="&#xE767;" />
                     </Button>
                     <Slider
@@ -394,11 +391,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
+                        x:Name="SpeedLabel"
                         VerticalAlignment="Center"
                         FontSize="10.5"
                         Foreground="#8CFFFFFF"
-                        IsTextScaleFactorEnabled="False"
-                        Text="Скорость" />
+                        IsTextScaleFactorEnabled="False" />
                     <StackPanel
                         x:Name="RatePanel"
                         Grid.Column="1"
@@ -450,10 +447,10 @@
                     </Grid.RowDefinitions>
                     <Grid>
                         <TextBlock
+                            x:Name="PlaylistLabel"
                             FontSize="10.5"
                             Foreground="#8CFFFFFF"
-                            IsTextScaleFactorEnabled="False"
-                            Text="Плейлист" />
+                            IsTextScaleFactorEnabled="False" />
                         <TextBlock
                             x:Name="PlaylistCount"
                             HorizontalAlignment="Right"
@@ -511,7 +508,6 @@
                         FontSize="11"
                         Foreground="#66FFFFFF"
                         IsTextScaleFactorEnabled="False"
-                        Text="Плейлист пуст"
                         Visibility="Collapsed" />
                 </Grid>
             </Grid>
@@ -537,24 +533,24 @@
                     Foreground="#FFFF8A00"
                     Glyph="&#xE7BA;" />
                 <TextBlock
+                    x:Name="OfflineTitle"
                     HorizontalAlignment="Center"
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="#F2FFFFFF"
-                    IsTextScaleFactorEnabled="False"
-                    Text="VLC не отвечает" />
+                    IsTextScaleFactorEnabled="False" />
                 <TextBlock
+                    x:Name="OfflineText"
                     FontSize="11"
                     Foreground="#99FFFFFF"
                     IsTextScaleFactorEnabled="False"
-                    Text="Одна кнопка запустит VLC с нужными настройками. Если он уже открыт без HTTP — перезапустит."
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
                 <Button
+                    x:Name="LaunchButton"
                     Margin="0,4,0,0"
                     HorizontalAlignment="Stretch"
                     Click="LaunchVlc_Click"
-                    Content="Запустить VLC"
                     Style="{StaticResource WidePrimaryButtonStyle}" />
                 <TextBlock
                     x:Name="LaunchStatus"
@@ -566,14 +562,14 @@
                     TextWrapping="Wrap" />
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="8">
                     <Button
+                        x:Name="RetryButton"
                         Click="Reconnect_Click"
-                        Content="Проверить снова"
                         Height="30"
                         Padding="12,0"
                         Style="{StaticResource ChipButtonStyle}" />
                     <Button
+                        x:Name="OfflineSettingsButton"
                         Click="OpenSettings_Click"
-                        Content="Настройки"
                         Height="30"
                         Padding="12,0"
                         Style="{StaticResource ChipButtonStyle}" />
@@ -592,16 +588,16 @@
             Visibility="Collapsed">
             <StackPanel Spacing="8">
                 <TextBlock
+                    x:Name="SettingsTitle"
                     FontSize="14"
                     FontWeight="SemiBold"
                     Foreground="#F2FFFFFF"
-                    IsTextScaleFactorEnabled="False"
-                    Text="Настройки" />
+                    IsTextScaleFactorEnabled="False" />
                 <TextBlock
+                    x:Name="SettingsSubtitle"
                     FontSize="10.5"
                     Foreground="#8CFFFFFF"
-                    IsTextScaleFactorEnabled="False"
-                    Text="HTTP-интерфейс VLC" />
+                    IsTextScaleFactorEnabled="False" />
                 <Grid ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -610,21 +606,36 @@
                     <TextBox
                         x:Name="HostBox"
                         FontSize="12"
-                        Header="Адрес"
                         PlaceholderText="127.0.0.1" />
                     <TextBox
                         x:Name="PortBox"
                         Grid.Column="1"
                         FontSize="12"
-                        Header="Порт"
                         InputScope="Number"
                         PlaceholderText="8080" />
                 </Grid>
                 <PasswordBox
                     x:Name="PasswordBox"
                     FontSize="12"
-                    Header="Пароль"
                     PlaceholderText="gamebar" />
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        x:Name="LanguageLabel"
+                        VerticalAlignment="Center"
+                        FontSize="10.5"
+                        Foreground="#8CFFFFFF"
+                        IsTextScaleFactorEnabled="False" />
+                    <ComboBox
+                        x:Name="LanguageBox"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        FontSize="12"
+                        SelectionChanged="LanguageBox_SelectionChanged" />
+                </Grid>
                 <TextBlock
                     x:Name="SettingsStatus"
                     MinHeight="14"
@@ -639,23 +650,23 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Button
+                        x:Name="CheckButton"
                         HorizontalAlignment="Left"
                         Click="CheckConnection_Click"
-                        Content="Проверить"
                         Height="30"
                         Padding="10,0"
                         Style="{StaticResource ChipButtonStyle}" />
                     <Button
+                        x:Name="CancelButton"
                         Grid.Column="1"
                         Click="CloseSettings_Click"
-                        Content="Отмена"
                         Height="30"
                         Padding="12,0"
                         Style="{StaticResource ChipButtonStyle}" />
                     <Button
+                        x:Name="SaveButton"
                         Grid.Column="2"
                         Click="SaveSettings_Click"
-                        Content="Сохранить"
                         Height="30"
                         Padding="12,0"
                         Style="{StaticResource PrimaryChipButtonStyle}" />

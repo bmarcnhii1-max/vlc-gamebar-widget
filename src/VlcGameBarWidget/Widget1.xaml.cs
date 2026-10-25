@@ -41,6 +41,7 @@ namespace VlcGameBarWidget
         private bool _updatingVolume;
         private bool _seekHeld;
         private bool _volumeHeld;
+        private bool _syncingLanguage;
         private volatile bool _playlistVisible;
         private DateTime _lastUserSeekUtc = DateTime.MinValue;
         private DateTime _lastUserVolumeUtc = DateTime.MinValue;
@@ -49,6 +50,12 @@ namespace VlcGameBarWidget
         {
             InitializeComponent();
             PlaylistList.ItemsSource = _playlist;
+
+            LanguageBox.Items.Add(new ComboBoxItem { Content = "Русский", Tag = "ru" });
+            LanguageBox.Items.Add(new ComboBoxItem { Content = "English", Tag = "en" });
+
+            UiStrings.Load();
+            ApplyLanguage();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -57,6 +64,8 @@ namespace VlcGameBarWidget
             _loaded = true;
             UpdateRateButtons(1);
             LoadSettings();
+            UiStrings.Load();
+            ApplyLanguage();
             StartPolling();
         }
 
@@ -133,16 +142,74 @@ namespace VlcGameBarWidget
             }
         }
 
+        private void ApplyLanguage()
+        {
+            ConnText.Text = UiStrings.T("Connecting");
+            TitleText.Text = UiStrings.T("NothingPlaying");
+            ToolTipService.SetToolTip(PlaylistToggleButton, UiStrings.T("Playlist"));
+            ToolTipService.SetToolTip(SettingsButton, UiStrings.T("Settings"));
+            ToolTipService.SetToolTip(PreviousButton, UiStrings.T("Previous"));
+            ToolTipService.SetToolTip(Back10Button, UiStrings.T("Back10"));
+            ToolTipService.SetToolTip(PlayButton, UiStrings.T("PlayPause"));
+            ToolTipService.SetToolTip(Forward10Button, UiStrings.T("Forward10"));
+            ToolTipService.SetToolTip(NextButton, UiStrings.T("Next"));
+            ToolTipService.SetToolTip(MuteButton, UiStrings.T("Mute"));
+            SpeedLabel.Text = UiStrings.T("Speed");
+            PlaylistLabel.Text = UiStrings.T("Playlist");
+            PlaylistEmpty.Text = UiStrings.T("PlaylistEmpty");
+            OfflineTitle.Text = UiStrings.T("OfflineTitle");
+            OfflineText.Text = UiStrings.T("OfflineText");
+            LaunchButton.Content = UiStrings.T("LaunchVlc");
+            RetryButton.Content = UiStrings.T("Retry");
+            OfflineSettingsButton.Content = UiStrings.T("Settings");
+            SettingsTitle.Text = UiStrings.T("Settings");
+            SettingsSubtitle.Text = UiStrings.T("SettingsSubtitle");
+            HostBox.Header = UiStrings.T("Host");
+            PortBox.Header = UiStrings.T("Port");
+            PasswordBox.Header = UiStrings.T("Password");
+            LanguageLabel.Text = UiStrings.T("Language");
+            CheckButton.Content = UiStrings.T("Check");
+            CancelButton.Content = UiStrings.T("Cancel");
+            SaveButton.Content = UiStrings.T("Save");
+
+            SyncLanguageBox();
+        }
+
+        private void SyncLanguageBox()
+        {
+            _syncingLanguage = true;
+            try
+            {
+                LanguageBox.SelectedIndex = UiStrings.Language == UiLanguage.En ? 1 : 0;
+            }
+            finally
+            {
+                _syncingLanguage = false;
+            }
+        }
+
+        private void LanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_syncingLanguage) return;
+
+            var item = LanguageBox.SelectedItem as ComboBoxItem;
+            var code = item == null ? null : item.Tag as string;
+            if (string.IsNullOrEmpty(code)) return;
+
+            UiStrings.SetLanguage(code == "en" ? UiLanguage.En : UiLanguage.Ru);
+            ApplyLanguage();
+        }
+
         private void ApplyStatus(VlcStatus status)
         {
             _status = status;
             _failures = 0;
             OfflinePanel.Visibility = Visibility.Collapsed;
             Dot.Fill = new SolidColorBrush(GreenColor);
-            ConnText.Text = status.State == "playing" ? "Играет" : status.State == "paused" ? "Пауза" : "Стоп";
+            ConnText.Text = status.State == "playing" ? UiStrings.T("StatePlaying") : status.State == "paused" ? UiStrings.T("StatePaused") : UiStrings.T("StateStopped");
 
             TitleText.Text = string.IsNullOrWhiteSpace(status.DisplayTitle)
-                ? "Ничего не воспроизводится"
+                ? UiStrings.T("NothingPlaying")
                 : status.DisplayTitle;
 
             var subtitle = BuildSubtitle(status);
@@ -222,7 +289,7 @@ namespace VlcGameBarWidget
             }
 
             Dot.Fill = new SolidColorBrush(RedColor);
-            ConnText.Text = "Нет связи";
+            ConnText.Text = UiStrings.T("NoConnection");
         }
 
         private void ShowOffline()
@@ -230,8 +297,8 @@ namespace VlcGameBarWidget
             _failures = 2;
             _status = null;
             Dot.Fill = new SolidColorBrush(RedColor);
-            ConnText.Text = "Нет связи";
-            TitleText.Text = "VLC не отвечает";
+            ConnText.Text = UiStrings.T("NoConnection");
+            TitleText.Text = UiStrings.T("OfflineTitle");
             SubText.Text = string.Empty;
             SubText.Visibility = Visibility.Collapsed;
             SeekSlider.IsEnabled = false;
@@ -501,7 +568,7 @@ namespace VlcGameBarWidget
         {
             if (!int.TryParse((PortBox.Text ?? string.Empty).Trim(), out var port) || port < 1 || port > 65535)
             {
-                SettingsStatus.Text = "Порт должен быть числом от 1 до 65535";
+                SettingsStatus.Text = UiStrings.T("PortInvalid");
                 return;
             }
 
@@ -524,14 +591,14 @@ namespace VlcGameBarWidget
         {
             if (!int.TryParse((PortBox.Text ?? string.Empty).Trim(), out var port) || port < 1 || port > 65535)
             {
-                SettingsStatus.Text = "Порт должен быть числом от 1 до 65535";
+                SettingsStatus.Text = UiStrings.T("PortInvalid");
                 return;
             }
 
             var host = (HostBox.Text ?? string.Empty).Trim();
             if (host.Length == 0) host = "127.0.0.1";
 
-            SettingsStatus.Text = "Проверяю…";
+            SettingsStatus.Text = UiStrings.T("Checking");
 
             using (var client = new VlcClient())
             {
@@ -540,12 +607,12 @@ namespace VlcGameBarWidget
                 {
                     var status = await client.GetStatusAsync(CancellationToken.None);
                     SettingsStatus.Text = string.IsNullOrWhiteSpace(status.DisplayTitle)
-                        ? "Связь есть"
-                        : "Связь есть: " + status.DisplayTitle;
+                        ? UiStrings.T("ConnectionOk")
+                        : UiStrings.T("ConnectionOkTitle") + status.DisplayTitle;
                 }
                 catch (Exception ex)
                 {
-                    SettingsStatus.Text = "Нет связи: " + ex.Message;
+                    SettingsStatus.Text = UiStrings.T("NoConnectionPrefix") + ex.Message;
                 }
             }
         }
@@ -558,7 +625,7 @@ namespace VlcGameBarWidget
         private async void LaunchVlc_Click(object sender, RoutedEventArgs e)
         {
             App.LogLine("LaunchVlc clicked");
-            LaunchStatus.Text = "Запускаю VLC…";
+            LaunchStatus.Text = UiStrings.T("Launching");
 
             try
             {
@@ -566,7 +633,7 @@ namespace VlcGameBarWidget
             }
             catch (Exception ex)
             {
-                LaunchStatus.Text = "Не удалось запустить: " + ex.Message;
+                LaunchStatus.Text = UiStrings.T("LaunchFailed") + ex.Message;
                 App.LogLine("LaunchVlc failed: " + ex);
                 return;
             }
@@ -582,7 +649,7 @@ namespace VlcGameBarWidget
                 }
             }
 
-            LaunchStatus.Text = "VLC не ответил. Проверь, что он установлен, и нажми ещё раз.";
+            LaunchStatus.Text = UiStrings.T("LaunchNoAnswer");
         }
     }
 }
