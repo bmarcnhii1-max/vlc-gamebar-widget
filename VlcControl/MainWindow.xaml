@@ -145,8 +145,7 @@
                             x:Name="ConnText"
                             VerticalAlignment="Center"
                             FontSize="11"
-                            Foreground="{StaticResource MutedBrush}"
-                            Text="Подключение…" />
+                            Foreground="{StaticResource MutedBrush}" />
                     </StackPanel>
 
                     <StackPanel
@@ -158,7 +157,7 @@
                             x:Name="PinButton"
                             Click="Pin_Click"
                             Style="{StaticResource GhostIconButton}"
-                            ToolTip="Поверх всех окон">
+                            ToolTip="{DynamicResource AlwaysOnTop}">
                             <TextBlock
                                 x:Name="PinIcon"
                                 FontFamily="Segoe MDL2 Assets"
@@ -168,7 +167,7 @@
                         <Button
                             Click="Settings_Click"
                             Style="{StaticResource GhostIconButton}"
-                            ToolTip="Настройки">
+                            ToolTip="{DynamicResource Settings}">
                             <TextBlock
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="12"
@@ -177,7 +176,7 @@
                         <Button
                             Click="Minimize_Click"
                             Style="{StaticResource GhostIconButton}"
-                            ToolTip="Свернуть">
+                            ToolTip="{DynamicResource Minimize}">
                             <TextBlock
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="10"
@@ -186,7 +185,7 @@
                         <Button
                             Click="Close_Click"
                             Style="{StaticResource CloseButton}"
-                            ToolTip="Закрыть">
+                            ToolTip="{DynamicResource Close}">
                             <TextBlock
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="10"
@@ -204,7 +203,6 @@
                             FontSize="15"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource TextBrush}"
-                            Text="Ничего не воспроизводится"
                             TextTrimming="CharacterEllipsis"
                             ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
                         <TextBlock
@@ -247,7 +245,7 @@
                             <Button
                                 Click="Previous_Click"
                                 Style="{StaticResource TransportButton}"
-                                ToolTip="Предыдущий">
+                                ToolTip="{DynamicResource Previous}">
                                 <TextBlock
                                     FontFamily="Segoe MDL2 Assets"
                                     FontSize="14"
@@ -258,13 +256,13 @@
                                 Click="Back10_Click"
                                 Content="−10"
                                 Style="{StaticResource JumpButton}"
-                                ToolTip="Назад 10 секунд" />
+                                ToolTip="{DynamicResource Back10}" />
                             <Button
                                 x:Name="PlayButton"
                                 Margin="4,0"
                                 Click="PlayPause_Click"
                                 Style="{StaticResource PlayButton}"
-                                ToolTip="Играть / Пауза">
+                                ToolTip="{DynamicResource PlayPause}">
                                 <TextBlock
                                     x:Name="PlayIcon"
                                     FontFamily="Segoe MDL2 Assets"
@@ -277,11 +275,11 @@
                                 Click="Forward10_Click"
                                 Content="+10"
                                 Style="{StaticResource JumpButton}"
-                                ToolTip="Вперёд 10 секунд" />
+                                ToolTip="{DynamicResource Forward10}" />
                             <Button
                                 Click="Next_Click"
                                 Style="{StaticResource TransportButton}"
-                                ToolTip="Следующий">
+                                ToolTip="{DynamicResource Next}">
                                 <TextBlock
                                     FontFamily="Segoe MDL2 Assets"
                                     FontSize="14"
@@ -301,7 +299,7 @@
                                 Height="28"
                                 Click="Mute_Click"
                                 Style="{StaticResource GhostIconButton}"
-                                ToolTip="Выключить звук">
+                                ToolTip="{DynamicResource Mute}">
                                 <TextBlock
                                     x:Name="MuteIcon"
                                     FontFamily="Segoe MDL2 Assets"
@@ -342,7 +340,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="10.5"
                                 Foreground="{StaticResource MutedBrush}"
-                                Text="Скорость" />
+                                Text="{DynamicResource Speed}" />
                             <StackPanel
                                 x:Name="RatePanel"
                                 Grid.Column="1"
@@ -365,7 +363,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="10.5"
                                         Foreground="{StaticResource MutedBrush}"
-                                        Text="Плейлист" />
+                                        Text="{DynamicResource Playlist}" />
                                     <TextBlock
                                         x:Name="PlaylistCount"
                                         Margin="6,0,0,0"
@@ -441,7 +439,7 @@
                                     Margin="8"
                                     FontSize="11"
                                     Foreground="{StaticResource DimBrush}"
-                                    Text="Плейлист пуст"
+                                    Text="{DynamicResource PlaylistEmpty}"
                                     Visibility="Collapsed" />
                             </Grid>
                         </Border>
@@ -472,7 +470,7 @@
                                 FontSize="14"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource TextBrush}"
-                                Text="VLC не подключён" />
+                                Text="{DynamicResource OfflineTitle}" />
                             <TextBlock
                                 x:Name="OfflineText"
                                 FontSize="11"
@@ -484,27 +482,27 @@
                                 x:Name="LaunchButton"
                                 Margin="0,12,0,0"
                                 Click="Launch_Click"
-                                Content="Запустить VLC"
+                                Content="{DynamicResource LaunchVlc}"
                                 Style="{StaticResource PrimaryButton}" />
                             <Button
                                 x:Name="RestartButton"
                                 Margin="0,12,0,0"
                                 Click="Restart_Click"
-                                Content="Перезапустить VLC"
+                                Content="{DynamicResource RestartVlc}"
                                 Style="{StaticResource PrimaryButton}"
                                 Visibility="Collapsed" />
                             <Button
                                 x:Name="DownloadButton"
                                 Margin="0,8,0,0"
                                 Click="Download_Click"
-                                Content="Скачать VLC"
+                                Content="{DynamicResource DownloadVlc}"
                                 Style="{StaticResource GhostButton}"
                                 Visibility="Collapsed" />
                             <Button
                                 x:Name="RetryButton"
                                 Margin="0,6,0,0"
                                 Click="Retry_Click"
-                                Content="Проверить снова"
+                                Content="{DynamicResource Retry}"
                                 Style="{StaticResource GhostButton}" />
                         </StackPanel>
                     </Border>
@@ -522,12 +520,12 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource TextBrush}"
-                                    Text="Настройки" />
+                                    Text="{DynamicResource Settings}" />
                                 <Button
                                     HorizontalAlignment="Right"
                                     Click="CloseSettings_Click"
                                     Style="{StaticResource GhostIconButton}"
-                                    ToolTip="Закрыть">
+                                    ToolTip="{DynamicResource Close}">
                                     <TextBlock
                                         FontFamily="Segoe MDL2 Assets"
                                         FontSize="10"
@@ -538,7 +536,7 @@
                                 Margin="0,2,0,12"
                                 FontSize="10.5"
                                 Foreground="{StaticResource MutedBrush}"
-                                Text="HTTP-интерфейс VLC. Обычно менять ничего не нужно." />
+                                Text="{DynamicResource SettingsHint}" />
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -550,7 +548,7 @@
                                         Margin="2,0,0,4"
                                         FontSize="10"
                                         Foreground="{StaticResource MutedBrush}"
-                                        Text="Адрес" />
+                                        Text="{DynamicResource Host}" />
                                     <TextBox x:Name="HostBox" Style="{StaticResource DarkTextBox}" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
@@ -558,7 +556,7 @@
                                         Margin="2,0,0,4"
                                         FontSize="10"
                                         Foreground="{StaticResource MutedBrush}"
-                                        Text="Порт" />
+                                        Text="{DynamicResource Port}" />
                                     <TextBox x:Name="PortBox" Style="{StaticResource DarkTextBox}" />
                                 </StackPanel>
                             </Grid>
@@ -566,14 +564,43 @@
                                 Margin="2,10,0,4"
                                 FontSize="10"
                                 Foreground="{StaticResource MutedBrush}"
-                                Text="Пароль" />
+                                Text="{DynamicResource Password}" />
                             <PasswordBox x:Name="PasswordBox" Style="{StaticResource DarkPasswordBox}" />
 
                             <CheckBox
                                 x:Name="LaunchOnStartBox"
                                 Margin="2,12,0,0"
-                                Content="Запускать VLC при старте панели"
+                                Content="{DynamicResource LaunchOnStart}"
                                 Style="{StaticResource DarkCheckBox}" />
+
+                            <Grid Margin="2,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="10"
+                                    Foreground="{StaticResource MutedBrush}"
+                                    Text="{DynamicResource Language}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button
+                                        x:Name="LangRuButton"
+                                        Click="LangRu_Click"
+                                        Content="Русский"
+                                        Height="26"
+                                        Padding="10,0"
+                                        Style="{StaticResource GhostButton}" />
+                                    <Button
+                                        x:Name="LangEnButton"
+                                        Margin="4,0,0,0"
+                                        Click="LangEn_Click"
+                                        Content="English"
+                                        Height="26"
+                                        Padding="10,0"
+                                        Style="{StaticResource GhostButton}" />
+                                </StackPanel>
+                            </Grid>
 
                             <TextBlock
                                 x:Name="SettingsStatus"
@@ -587,20 +614,20 @@
                                 <Button
                                     HorizontalAlignment="Left"
                                     Click="CheckConnection_Click"
-                                    Content="Проверить"
+                                    Content="{DynamicResource Check}"
                                     Style="{StaticResource GhostButton}"
                                     Width="90" />
                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                     <Button
                                         Width="80"
                                         Click="CloseSettings_Click"
-                                        Content="Отмена"
+                                        Content="{DynamicResource Cancel}"
                                         Style="{StaticResource GhostButton}" />
                                     <Button
                                         Width="96"
                                         Margin="6,0,0,0"
                                         Click="SaveSettings_Click"
-                                        Content="Сохранить"
+                                        Content="{DynamicResource Save}"
                                         Style="{StaticResource PrimaryButton}"
                                         Height="32" />
                                 </StackPanel>
@@ -629,23 +656,23 @@
                                 FontSize="14"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource TextBrush}"
-                                Text="Перезапустить VLC?" />
+                                Text="{DynamicResource ConfirmRestartTitle}" />
                             <TextBlock
                                 FontSize="11"
                                 Foreground="{StaticResource MutedBrush}"
                                 LineHeight="16"
-                                Text="VLC будет закрыт и открыт заново с HTTP-интерфейсом. Текущее воспроизведение прервётся."
+                                Text="{DynamicResource ConfirmRestartText}"
                                 TextAlignment="Center"
                                 TextWrapping="Wrap" />
                             <Button
                                 Margin="0,14,0,0"
                                 Click="ConfirmRestart_Click"
-                                Content="Перезапустить"
+                                Content="{DynamicResource Restart}"
                                 Style="{StaticResource PrimaryButton}" />
                             <Button
                                 Margin="0,6,0,0"
                                 Click="CancelRestart_Click"
-                                Content="Отмена"
+                                Content="{DynamicResource Cancel}"
                                 Style="{StaticResource GhostButton}" />
                         </StackPanel>
                     </Border>

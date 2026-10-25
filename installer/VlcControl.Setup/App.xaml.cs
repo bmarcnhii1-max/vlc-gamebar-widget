@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using VlcControl.Install;
 
 namespace VlcControl.Setup
 {
@@ -12,11 +13,13 @@ namespace VlcControl.Setup
         {
             base.OnStartup(e);
 
+            Lang.Load();
+
             DispatcherUnhandledException += (sender, args) =>
             {
                 WriteError(args.Exception);
                 MessageBox.Show(
-                    "Произошла ошибка: " + args.Exception.Message,
+                    Lang.T("ErrUnhandled") + args.Exception.Message,
                     "VLC Control",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);

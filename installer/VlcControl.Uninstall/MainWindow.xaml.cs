@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using VlcControl.Install;
 
 namespace VlcControl.Uninstall
 {
@@ -13,20 +14,21 @@ namespace VlcControl.Uninstall
         {
             InitializeComponent();
             _installDir = installDir;
+            Title = Lang.T("WindowTitle");
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             DeleteButton.IsEnabled = false;
             CancelButton.IsEnabled = false;
-            StatusText.Text = "Удаляю…";
+            StatusText.Text = Lang.T("Deleting");
 
             var engine = new UninstallEngine { InstallDir = _installDir };
             engine.Log += text => Dispatcher.InvokeAsync(() => StatusText.Text = text);
 
             await Task.Run(() => engine.Run());
 
-            StatusText.Text = "Готово. Папка будет удалена через секунду.";
+            StatusText.Text = Lang.T("DoneMessage");
             await Task.Delay(600);
 
             engine.DeleteInstallDirectory();

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using VlcControl.Install;
 
 namespace VlcControl.Uninstall
 {
@@ -11,6 +12,8 @@ namespace VlcControl.Uninstall
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            Lang.Load();
 
             var args = e.Args ?? new string[0];
             var cleanupIndex = Array.FindIndex(args, a => string.Equals(a, "/cleanup", StringComparison.OrdinalIgnoreCase));

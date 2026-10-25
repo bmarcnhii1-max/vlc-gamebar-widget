@@ -23,6 +23,8 @@ namespace VlcControl
                 args.Handled = false;
             };
 
+            Lang.Load();
+
             base.OnStartup(e);
         }
 

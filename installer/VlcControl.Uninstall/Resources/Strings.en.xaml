@@ -1,0 +1,22 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="WindowTitle">Uninstall VLC Control</sys:String>
+    <sys:String x:Key="UninstallTitle">Uninstall VLC Control</sys:String>
+    <sys:String x:Key="UninstallQuestion">Uninstall VLC Control?</sys:String>
+    <sys:String x:Key="UninstallHint">The panel, the Game Bar widget and the shortcuts will be removed. VLC's own settings stay untouched.</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
+    <sys:String x:Key="Delete">Uninstall</sys:String>
+    <sys:String x:Key="Deleting">Uninstalling…</sys:String>
+    <sys:String x:Key="DoneMessage">Done. The folder will be removed in a second.</sys:String>
+    <sys:String x:Key="LogCleanupFailed">failed to start folder cleanup: </sys:String>
+    <sys:String x:Key="LogDeleteFailed">failed to delete the folder: </sys:String>
+    <sys:String x:Key="LogStopped">running components stopped</sys:String>
+    <sys:String x:Key="LogPackageRemoved">widget package removed</sys:String>
+    <sys:String x:Key="LogLoopback">loopback exemption removed</sys:String>
+    <sys:String x:Key="LogDevModeRestored">developer mode restored</sys:String>
+    <sys:String x:Key="LogDevModeFailed">failed to restore developer mode: </sys:String>
+    <sys:String x:Key="LogShortcuts">shortcuts removed</sys:String>
+    <sys:String x:Key="LogUninstallEntry">entry in “Apps &amp; features” removed</sys:String>
+    <sys:String x:Key="LogUninstallEntryFailed">failed to remove the entry: </sys:String>
+</ResourceDictionary>

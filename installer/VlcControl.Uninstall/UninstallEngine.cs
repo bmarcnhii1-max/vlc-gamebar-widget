@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32;
+using VlcControl.Install;
 
 namespace VlcControl.Uninstall
 {
@@ -51,7 +52,7 @@ namespace VlcControl.Uninstall
             }
             catch (Exception ex)
             {
-                LogLine("не удалось запустить очистку папки: " + ex.Message);
+                LogLine(Lang.T("LogCleanupFailed") + ex.Message);
             }
         }
 
@@ -67,7 +68,7 @@ namespace VlcControl.Uninstall
             }
             catch (Exception ex)
             {
-                LogLine("не удалось удалить папку: " + ex.Message);
+                LogLine(Lang.T("LogDeleteFailed") + ex.Message);
             }
 
             try
@@ -97,7 +98,7 @@ namespace VlcControl.Uninstall
                 }
             }
 
-            LogLine("остановлены запущенные компоненты");
+            LogLine(Lang.T("LogStopped"));
         }
 
         private string ReadPackageFamilyName()
@@ -106,18 +107,18 @@ namespace VlcControl.Uninstall
             {
                 var text = RunPowerShell("(Get-AppxPackage -Name " + PackageName + ").PackageFamilyName");
                 var value = text.Trim();
-                return value.Length == 0 ? "vlcgamebarwidget_11mkq6sn63zaj" : value;
+                return value.Length == 0 ? "VlcGameBarWidget_11mkq6sn63zaj" : value;
             }
             catch
             {
-                return "vlcgamebarwidget_11mkq6sn63zaj";
+                return "VlcGameBarWidget_11mkq6sn63zaj";
             }
         }
 
         private void RemovePackage()
         {
             RunPowerShell("Get-AppxPackage -Name " + PackageName + " | Remove-AppxPackage -ErrorAction SilentlyContinue");
-            LogLine("пакет виджета удалён");
+            LogLine(Lang.T("LogPackageRemoved"));
         }
 
         private void RemoveLoopback(string family)
@@ -130,7 +131,7 @@ namespace VlcControl.Uninstall
 
             int code;
             RunProcess(tool, "LoopbackExempt -d -n=" + family, out code);
-            LogLine("исключение локальной сети снято");
+            LogLine(Lang.T("LogLoopback"));
         }
 
         private void RestoreDeveloperMode()
@@ -167,11 +168,11 @@ namespace VlcControl.Uninstall
                     ApplyValue(handle, "AllowAllTrustedApps", values.ContainsKey("allowTrusted") ? values["allowTrusted"] : "-1");
                 }
 
-                LogLine("режим разработчика восстановлен");
+                LogLine(Lang.T("LogDevModeRestored"));
             }
             catch (Exception ex)
             {
-                LogLine("не удалось восстановить режим разработчика: " + ex.Message);
+                LogLine(Lang.T("LogDevModeFailed") + ex.Message);
             }
         }
 
@@ -214,7 +215,7 @@ namespace VlcControl.Uninstall
                 }
             }
 
-            LogLine("ярлыки удалены");
+            LogLine(Lang.T("LogShortcuts"));
         }
 
         private void DeleteUninstallEntry()
@@ -222,11 +223,11 @@ namespace VlcControl.Uninstall
             try
             {
                 Registry.CurrentUser.DeleteSubKeyTree(UninstallKey, false);
-                LogLine("запись в «Программы и компоненты» удалена");
+                LogLine(Lang.T("LogUninstallEntry"));
             }
             catch (Exception ex)
             {
-                LogLine("не удалось удалить запись: " + ex.Message);
+                LogLine(Lang.T("LogUninstallEntryFailed") + ex.Message);
             }
         }
 

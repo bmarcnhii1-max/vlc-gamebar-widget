@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using VlcControl.Install;
 
 namespace VlcControl.Setup
 {
@@ -22,7 +23,9 @@ namespace VlcControl.Setup
             InitializeComponent();
             _installDir = installDir;
 
-            InstallPathText.Text = "Установка в " + _installDir;
+            Title = Lang.T("WindowTitle");
+            InstallPathText.Text = Lang.T("InstallingTo") + _installDir;
+            UpdateLanguageButtons();
             DetectVlc();
             BuildSteps();
         }
@@ -33,17 +36,45 @@ namespace VlcControl.Setup
             if (vlc == null)
             {
                 VlcDot.Fill = (Brush)FindResource("RedBrush");
-                VlcStatusText.Text = "VLC не найден на этом компьютере";
-                VlcPathText.Text = "Панель и виджет всё равно установятся. После установки VLC запустите его через панель.";
+                VlcStatusText.Text = Lang.T("VlcNotFound");
+                VlcPathText.Text = Lang.T("VlcNotFoundHint");
                 DownloadVlcButton.Visibility = Visibility.Visible;
             }
             else
             {
                 VlcDot.Fill = (Brush)FindResource("GreenBrush");
-                VlcStatusText.Text = "VLC найден";
+                VlcStatusText.Text = Lang.T("VlcFound");
                 VlcPathText.Text = vlc;
                 DownloadVlcButton.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void UpdateLanguageButtons()
+        {
+            LangRuButton.Foreground = Lang.Current == UiLanguage.Ru
+                ? (Brush)FindResource("AccentBrush")
+                : (Brush)FindResource("MutedBrush");
+            LangEnButton.Foreground = Lang.Current == UiLanguage.En
+                ? (Brush)FindResource("AccentBrush")
+                : (Brush)FindResource("MutedBrush");
+        }
+
+        private void LangRu_Click(object sender, RoutedEventArgs e) => ApplyLanguage(UiLanguage.Ru);
+
+        private void LangEn_Click(object sender, RoutedEventArgs e) => ApplyLanguage(UiLanguage.En);
+
+        private void ApplyLanguage(UiLanguage language)
+        {
+            Lang.Apply(language);
+
+            Title = Lang.T("WindowTitle");
+            InstallPathText.Text = Lang.T("InstallingTo") + _installDir;
+            UpdateLanguageButtons();
+            DetectVlc();
+
+            StepsPanel.Children.Clear();
+            _rows.Clear();
+            BuildSteps();
         }
 
         private void BuildSteps()
@@ -128,7 +159,7 @@ namespace VlcControl.Setup
             }
             else
             {
-                ErrorText.Text = result.Error ?? "Неизвестная ошибка.";
+                ErrorText.Text = result.Error ?? Lang.T("UnknownError");
                 ShowPanel(ErrorPanel);
             }
         }
@@ -211,7 +242,7 @@ namespace VlcControl.Setup
                 row.Detail.Visibility = Visibility.Collapsed;
             }
 
-            StatusText.Text = "Подготовка";
+            StatusText.Text = Lang.T("Preparing");
             LogText.Text = string.Empty;
             ProgressBar.Value = 0;
         }
@@ -222,12 +253,12 @@ namespace VlcControl.Setup
 
             if (!result.WidgetInstalled)
             {
-                warnings.Add("Виджет не зарегистрировался: " + result.WidgetMessage);
+                warnings.Add(Lang.T("WidgetFailed") + result.WidgetMessage);
             }
 
-            if (result.VlcConfigured && result.VlcMessage != null && result.VlcMessage.Contains("запущен"))
+            if (result.VlcWasRunning)
             {
-                warnings.Add("VLC сейчас открыт — его файл настроек не менялся. Закройте VLC, чтобы настройки применились.");
+                warnings.Add(Lang.T("VlcRunningWarning"));
             }
 
             if (warnings.Count > 0)
@@ -258,7 +289,7 @@ namespace VlcControl.Setup
             var exe = Path.Combine(_installDir, "app", SetupEngine.AppExeName);
             if (!File.Exists(exe))
             {
-                MessageBox.Show("Файл панели не найден: " + exe, "VLC Control", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Lang.T("PanelMissing") + exe, "VLC Control", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

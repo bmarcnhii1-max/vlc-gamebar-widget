@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using VlcControl.Install;
 
 namespace VlcControl.Setup
 {
@@ -10,7 +11,7 @@ namespace VlcControl.Setup
             var type = Type.GetTypeFromProgID("WScript.Shell");
             if (type == null)
             {
-                throw new InvalidOperationException("Не удалось создать ярлык: нет WScript.Shell.");
+                throw new InvalidOperationException(Lang.T("ErrShortcutLink"));
             }
 
             object shell = Activator.CreateInstance(type);

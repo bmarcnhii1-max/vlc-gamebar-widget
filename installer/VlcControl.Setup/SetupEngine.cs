@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32;
+using VlcControl.Install;
 
 namespace VlcControl.Setup
 {
@@ -49,6 +50,8 @@ namespace VlcControl.Setup
 
         public string VlcMessage { get; set; }
 
+        public bool VlcWasRunning { get; set; }
+
         public bool ShortcutsCreated { get; set; }
 
         public string InstallDir { get; set; }
@@ -67,11 +70,11 @@ namespace VlcControl.Setup
         public SetupEngine(string installDir)
         {
             _installDir = installDir;
-            _steps.Add(new StepInfo("Подготовка"));
-            _steps.Add(new StepInfo("Копирование файлов"));
-            _steps.Add(new StepInfo("Виджет для Xbox Game Bar"));
-            _steps.Add(new StepInfo("Настройки VLC"));
-            _steps.Add(new StepInfo("Ярлыки и удаление"));
+            _steps.Add(new StepInfo(Lang.T("StepPrepare")));
+            _steps.Add(new StepInfo(Lang.T("StepCopy")));
+            _steps.Add(new StepInfo(Lang.T("StepWidget")));
+            _steps.Add(new StepInfo(Lang.T("StepVlc")));
+            _steps.Add(new StepInfo(Lang.T("StepShortcuts")));
         }
 
         public IList<StepInfo> Steps => _steps;
@@ -90,16 +93,17 @@ namespace VlcControl.Setup
 
             try
             {
-                Step(0, StepStatus.Running, "Останавливаю запущенные компоненты");
+                Step(0, StepStatus.Running, Lang.T("DetailStop"));
                 Directory.CreateDirectory(_installDir);
                 StopProcesses();
                 Step(0, StepStatus.Ok, null);
 
-                Step(1, StepStatus.Running, "Распаковываю панель и виджет");
+                Step(1, StepStatus.Running, Lang.T("DetailExtract"));
                 ExtractPayload();
+                SaveLanguage();
                 Step(1, StepStatus.Ok, null);
 
-                Step(2, StepStatus.Running, "Регистрирую виджет");
+                Step(2, StepStatus.Running, Lang.T("DetailRegister"));
                 try
                 {
                     result.WidgetMessage = InstallWidget();
@@ -113,10 +117,13 @@ namespace VlcControl.Setup
                     Step(2, StepStatus.Warn, ex.Message);
                 }
 
-                Step(3, StepStatus.Running, "Настраиваю HTTP-интерфейс VLC");
+                SaveLanguage();
+                Step(3, StepStatus.Running, Lang.T("DetailVlc"));
                 try
                 {
-                    result.VlcMessage = ConfigureVlc();
+                    bool vlcWasRunning;
+                    result.VlcMessage = ConfigureVlc(out vlcWasRunning);
+                    result.VlcWasRunning = vlcWasRunning;
                     result.VlcConfigured = true;
                     Step(3, StepStatus.Ok, result.VlcMessage);
                 }
@@ -127,7 +134,7 @@ namespace VlcControl.Setup
                     Step(3, StepStatus.Warn, ex.Message);
                 }
 
-                Step(4, StepStatus.Running, "Создаю ярлыки");
+                Step(4, StepStatus.Running, Lang.T("DetailShortcuts"));
                 CreateShortcuts();
                 WriteUninstallEntry();
                 result.ShortcutsCreated = true;
@@ -160,6 +167,11 @@ namespace VlcControl.Setup
             step.Status = status;
             step.Detail = detail;
             Raise(step);
+        }
+
+        private void SaveLanguage()
+        {
+            Lang.Save(Lang.Current, _installDir);
         }
 
         private void Raise(StepInfo step)
@@ -218,7 +230,7 @@ namespace VlcControl.Setup
             {
                 if (stream == null)
                 {
-                    throw new InvalidOperationException("Файл установки повреждён: нет встроенных данных (payload.zip).");
+                    throw new InvalidOperationException(Lang.T("ErrPayload"));
                 }
 
                 var temp = Path.Combine(Path.GetTempPath(), "vlccontrol-payload-" + Guid.NewGuid().ToString("N") + ".zip");
@@ -263,7 +275,7 @@ namespace VlcControl.Setup
 
             if (!File.Exists(AppExePath))
             {
-                throw new InvalidOperationException("Панель не распаковалась: нет файла " + AppExeName + ".");
+                throw new InvalidOperationException(Lang.T("ErrPanel") + AppExeName + ".");
             }
 
             LogLine("payload extracted to " + _installDir);
@@ -291,7 +303,7 @@ namespace VlcControl.Setup
             var manifest = Path.Combine(_installDir, "widget", "AppxManifest.xml");
             if (!File.Exists(manifest))
             {
-                throw new InvalidOperationException("Нет файла манифеста виджета.");
+                throw new InvalidOperationException(Lang.T("ErrManifest"));
             }
 
             var devMode = EnsureDeveloperMode();
@@ -305,7 +317,7 @@ namespace VlcControl.Setup
             LogLine("widget registered: " + outText.Trim());
             LogLine("developer mode: " + devMode);
             LogLine("loopback: " + loopback);
-            return "Виджет зарегистрирован" + (devMode == "включён" ? ", режим разработчика включён" : string.Empty);
+            return Lang.T("WidgetOk") + (devMode == Lang.T("Enabled") ? Lang.T("DevModeEnabled") : string.Empty);
         }
 
         private string EnsureDeveloperMode()
@@ -346,21 +358,21 @@ namespace VlcControl.Setup
 
             if (allowDev == 1 && allowTrusted == 1)
             {
-                return "уже включён";
+                return Lang.T("AlreadyOn");
             }
 
             using (var keyHandle = Registry.LocalMachine.CreateSubKey(key))
             {
                 if (keyHandle == null)
                 {
-                    throw new InvalidOperationException("Не удалось открыть ключ режима разработчика.");
+                    throw new InvalidOperationException(Lang.T("ErrDevMode"));
                 }
 
                 keyHandle.SetValue("AllowDevelopmentWithoutDevLicense", 1, RegistryValueKind.DWord);
                 keyHandle.SetValue("AllowAllTrustedApps", 1, RegistryValueKind.DWord);
             }
 
-            return "включён";
+            return Lang.T("Enabled");
         }
 
         private static int? ReadDword(RegistryKey key, string name)
@@ -387,11 +399,11 @@ namespace VlcControl.Setup
             {
                 var text = RunPowerShell("(Get-AppxPackage -Name " + PackageName + ").PackageFamilyName");
                 var value = text.Trim();
-                return value.Length == 0 ? "vlcgamebarwidget_11mkq6sn63zaj" : value;
+                return value.Length == 0 ? "VlcGameBarWidget_11mkq6sn63zaj" : value;
             }
             catch
             {
-                return "vlcgamebarwidget_11mkq6sn63zaj";
+                return "VlcGameBarWidget_11mkq6sn63zaj";
             }
         }
 
@@ -400,34 +412,35 @@ namespace VlcControl.Setup
             var tool = Path.Combine(Environment.SystemDirectory, "CheckNetIsolation.exe");
             if (!File.Exists(tool))
             {
-                return "инструмент не найден";
+                return Lang.T("ToolMissing");
             }
 
             int code;
             var list = RunProcess(tool, "LoopbackExempt -s", out code);
             if (list.IndexOf(family, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return "уже разрешён";
+                return Lang.T("AlreadyAllowed");
             }
 
             var result = RunProcess(tool, "LoopbackExempt -a -n=" + family, out code);
             if (code != 0)
             {
-                throw new InvalidOperationException("Не удалось разрешить локальную сеть для виджета: " + result.Trim());
+                throw new InvalidOperationException(Lang.T("ErrLoopback") + result.Trim());
             }
 
-            return "разрешён";
+            return Lang.T("Allowed");
         }
 
-        private string ConfigureVlc()
+        private string ConfigureVlc(out bool wasRunning)
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var vlcDir = Path.Combine(appData, "vlc");
             var vlcrc = Path.Combine(vlcDir, "vlcrc");
 
-            if (Process.GetProcessesByName("vlc").Length > 0)
+            wasRunning = Process.GetProcessesByName("vlc").Length > 0;
+            if (wasRunning)
             {
-                return "VLC сейчас запущен — файл настроек не трогаем, панель запустит VLC с нужными параметрами";
+                return Lang.T("VlcRunning");
             }
 
             Directory.CreateDirectory(vlcDir);
@@ -445,8 +458,8 @@ namespace VlcControl.Setup
             File.WriteAllLines(vlcrc, updated, new UTF8Encoding(false));
 
             return existed
-                ? "HTTP-интерфейс включён (резервная копия сохранена)"
-                : "Создан файл настроек VLC с HTTP-интерфейсом";
+                ? Lang.T("VlcConfiguredBackup")
+                : Lang.T("VlcConfiguredNew");
         }
 
         private static string[] ApplyVlcSettings(string[] lines)
@@ -527,7 +540,7 @@ namespace VlcControl.Setup
             var exe = AppExePath;
             if (!File.Exists(exe))
             {
-                throw new FileNotFoundException("Нет файла панели для ярлыка.", exe);
+                throw new FileNotFoundException(Lang.T("ErrShortcut"), exe);
             }
 
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -549,12 +562,12 @@ namespace VlcControl.Setup
             {
                 if (key == null)
                 {
-                    throw new InvalidOperationException("Не удалось создать запись для удаления.");
+                    throw new InvalidOperationException(Lang.T("ErrUninstallEntry"));
                 }
 
                 var uninstaller = Path.Combine(_installDir, "Uninstall.exe");
                 key.SetValue("DisplayName", "VLC Control");
-                key.SetValue("DisplayVersion", "1.0.0");
+                key.SetValue("DisplayVersion", "1.0.1");
                 key.SetValue("Publisher", "VLC Control");
                 key.SetValue("InstallLocation", _installDir);
                 key.SetValue("DisplayIcon", AppExePath + ",0");

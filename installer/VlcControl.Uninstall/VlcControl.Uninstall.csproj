@@ -7,14 +7,15 @@
     <AssemblyName>Uninstall</AssemblyName>
     <RootNamespace>VlcControl.Uninstall</RootNamespace>
     <ApplicationIcon>app.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.1</Version>
+    <FileVersion>1.0.1.0</FileVersion>
     <Product>VLC Control</Product>
     <Description>Удаление VLC Control</Description>
     <ApplicationManifest Condition="'$(TestBuild)' == 'true'">app.test.manifest</ApplicationManifest>
     <ApplicationManifest Condition="'$(TestBuild)' != 'true'">app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Lang.cs" />
     <Resource Include="app.ico" />
   </ItemGroup>
 </Project>

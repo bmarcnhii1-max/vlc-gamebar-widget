@@ -68,6 +68,10 @@ namespace VlcControl
             PlaylistList.ItemsSource = _playlist;
             LaunchOnStartBox.IsChecked = _settings.LaunchVlcOnStart;
 
+            ConnText.Text = Lang.T("Connecting");
+            TitleText.Text = Lang.T("NothingPlaying");
+            UpdateLanguageButtons();
+
             ApplyInitialPosition();
 
             Loaded += MainWindow_Loaded;
@@ -208,13 +212,13 @@ namespace VlcControl
             }
 
             Dot.Fill = GreenBrush;
-            ConnText.Text = status.State == "playing" ? "Играет"
-                : status.State == "paused" ? "Пауза"
-                : status.State == "stopped" ? "Стоп"
-                : "Готов";
+            ConnText.Text = status.State == "playing" ? Lang.T("StatePlaying")
+                : status.State == "paused" ? Lang.T("StatePaused")
+                : status.State == "stopped" ? Lang.T("StateStopped")
+                : Lang.T("StateReady");
 
             TitleText.Text = string.IsNullOrWhiteSpace(status.DisplayTitle)
-                ? "Ничего не воспроизводится"
+                ? Lang.T("NothingPlaying")
                 : status.DisplayTitle;
 
             var subtitle = BuildSubtitle(status);
@@ -293,15 +297,15 @@ namespace VlcControl
             _failures++;
             _connected = false;
             Dot.Fill = RedBrush;
-            ConnText.Text = "Нет связи";
+            ConnText.Text = Lang.T("NoConnection");
 
             if (_launching)
             {
                 if (DateTime.UtcNow - _launchStartedUtc < TimeSpan.FromSeconds(12))
                 {
                     ShowOffline(
-                        "Запускаю VLC…",
-                        "Поднимаю HTTP-интерфейс. Обычно это занимает 1–2 секунды.",
+                        Lang.T("Launching"),
+                        Lang.T("StartingHint"),
                         "\uE895",
                         false, false, false, false);
                     return;
@@ -323,8 +327,8 @@ namespace VlcControl
             if (path == null)
             {
                 ShowOffline(
-                    "VLC не найден",
-                    "Установи VLC — без него панель не сможет управлять плеером. После установки нажми «Проверить снова».",
+                    Lang.T("VlcNotFound"),
+                    Lang.T("VlcNotFoundText"),
                     "\uE7BA",
                     false, false, true, true);
                 return;
@@ -333,16 +337,16 @@ namespace VlcControl
             if (running)
             {
                 ShowOffline(
-                    "VLC запущен без HTTP",
-                    "Кнопка закроет VLC и откроет его заново с нужными настройками. Займёт пару секунд.",
+                    Lang.T("VlcNoHttp"),
+                    Lang.T("VlcNoHttpText"),
                     "\uE895",
                     false, true, false, true);
                 return;
             }
 
             ShowOffline(
-                "VLC не подключён",
-                "Нажми кнопку — VLC откроется сразу с HTTP-интерфейсом. Больше ничего настраивать не нужно.",
+                Lang.T("OfflineTitle"),
+                Lang.T("OfflineText"),
                 "\uE7BA",
                 true, false, false, true);
         }
@@ -376,8 +380,8 @@ namespace VlcControl
             _failures = 0;
 
             ShowOffline(
-                restart ? "Перезапускаю VLC…" : "Запускаю VLC…",
-                "Поднимаю HTTP-интерфейс. Обычно это занимает 1–2 секунды.",
+                restart ? Lang.T("Restarting") : Lang.T("Launching"),
+                Lang.T("StartingHint"),
                 "\uE895",
                 false, false, false, false);
 
@@ -396,8 +400,8 @@ namespace VlcControl
             {
                 _launching = false;
                 ShowOffline(
-                    "Не удалось запустить VLC",
-                    "Проверь, что VLC установлен и запускается вручную. " + ex.Message,
+                    Lang.T("LaunchFailed"),
+                    Lang.T("LaunchFailedText") + ex.Message,
                     "\uE7BA",
                     !VlcController.IsRunning(), VlcController.IsRunning(), false, true);
             }
@@ -422,7 +426,7 @@ namespace VlcControl
                 _connected = false;
                 _launching = false;
                 Dot.Fill = RedBrush;
-                ConnText.Text = "Нет связи";
+                ConnText.Text = Lang.T("NoConnection");
                 UpdateOfflineForCurrentState();
             }
         }
@@ -470,7 +474,7 @@ namespace VlcControl
                 _connected = false;
                 _launching = false;
                 Dot.Fill = RedBrush;
-                ConnText.Text = "Нет связи";
+                ConnText.Text = Lang.T("NoConnection");
                 UpdateOfflineForCurrentState();
             }
         }
@@ -489,6 +493,30 @@ namespace VlcControl
         private void UpdatePinVisual()
         {
             PinIcon.Foreground = Topmost ? AccentBrush : MutedBrush;
+        }
+
+        private void UpdateLanguageButtons()
+        {
+            LangRuButton.Foreground = Lang.Current == UiLanguage.Ru ? AccentBrush : MutedBrush;
+            LangEnButton.Foreground = Lang.Current == UiLanguage.En ? AccentBrush : MutedBrush;
+        }
+
+        private void LangRu_Click(object sender, RoutedEventArgs e) => ApplyLanguage(UiLanguage.Ru);
+
+        private void LangEn_Click(object sender, RoutedEventArgs e) => ApplyLanguage(UiLanguage.En);
+
+        private void ApplyLanguage(UiLanguage language)
+        {
+            Lang.Apply(language);
+            Lang.Save(language);
+
+            if (_status == null)
+            {
+                ConnText.Text = Lang.T("Connecting");
+                TitleText.Text = Lang.T("NothingPlaying");
+            }
+
+            UpdateLanguageButtons();
         }
 
         private static string BuildSubtitle(VlcStatus status)
@@ -768,7 +796,7 @@ namespace VlcControl
         private async void Retry_Click(object sender, RoutedEventArgs e)
         {
             Dot.Fill = MutedBrush;
-            ConnText.Text = "Проверяю…";
+            ConnText.Text = Lang.T("Checking");
             await RefreshStatusOnceAsync();
         }
 
@@ -807,7 +835,7 @@ namespace VlcControl
         {
             if (!int.TryParse((PortBox.Text ?? string.Empty).Trim(), out var port) || port < 1 || port > 65535)
             {
-                SettingsStatus.Text = "Порт должен быть числом от 1 до 65535";
+                SettingsStatus.Text = Lang.T("PortInvalid");
                 return;
             }
 
@@ -827,14 +855,14 @@ namespace VlcControl
         {
             if (!int.TryParse((PortBox.Text ?? string.Empty).Trim(), out var port) || port < 1 || port > 65535)
             {
-                SettingsStatus.Text = "Порт должен быть числом от 1 до 65535";
+                SettingsStatus.Text = Lang.T("PortInvalid");
                 return;
             }
 
             var host = (HostBox.Text ?? string.Empty).Trim();
             if (host.Length == 0) host = "127.0.0.1";
 
-            SettingsStatus.Text = "Проверяю…";
+            SettingsStatus.Text = Lang.T("Checking");
 
             using (var client = new VlcClient())
             {
@@ -843,12 +871,12 @@ namespace VlcControl
                 {
                     var status = await client.GetStatusAsync(CancellationToken.None);
                     SettingsStatus.Text = string.IsNullOrWhiteSpace(status.DisplayTitle)
-                        ? "Связь есть"
-                        : "Связь есть: " + status.DisplayTitle;
+                        ? Lang.T("ConnectionOk")
+                        : Lang.T("ConnectionOkTitle") + status.DisplayTitle;
                 }
                 catch (Exception ex)
                 {
-                    SettingsStatus.Text = "Нет связи: " + ex.Message;
+                    SettingsStatus.Text = Lang.T("NoConnectionPrefix") + ex.Message;
                 }
             }
         }

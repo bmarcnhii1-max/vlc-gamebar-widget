@@ -1,10 +1,10 @@
 <Window x:Class="VlcControl.Setup.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="VLC Control — установка"
+        Title="VLC Control"
         Icon="app.ico"
         Width="620"
-        Height="500"
+        Height="540"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -58,6 +58,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -66,14 +67,14 @@
                     FontSize="25"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource TextBrush}"
-                    Text="Установка VLC Control" />
+                    Text="{DynamicResource InstallTitle}" />
 
                 <TextBlock
                     Grid.Row="1"
                     Margin="0,8,0,0"
                     FontSize="12.5"
                     Foreground="{StaticResource MutedBrush}"
-                    Text="Панель управления VLC и виджет для Xbox Game Bar — всё в одном установщике."
+                    Text="{DynamicResource InstallSubtitle}"
                     TextWrapping="Wrap" />
 
                 <StackPanel Grid.Row="2" Margin="0,20,0,0">
@@ -83,7 +84,7 @@
                             Margin="11,0,0,0"
                             FontSize="13"
                             Foreground="{StaticResource TextBrush}"
-                            Text="Панель: перемотка, скорость, звук, плейлист и название трека"
+                            Text="{DynamicResource FeaturePanel}"
                             TextWrapping="Wrap" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,11">
@@ -92,7 +93,7 @@
                             Margin="11,0,0,0"
                             FontSize="13"
                             Foreground="{StaticResource TextBrush}"
-                            Text="Виджет Game Bar: то же самое и кнопка «Запустить VLC»"
+                            Text="{DynamicResource FeatureWidget}"
                             TextWrapping="Wrap" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -101,13 +102,45 @@
                             Margin="11,0,0,0"
                             FontSize="13"
                             Foreground="{StaticResource TextBrush}"
-                            Text="VLC настраивается автоматически, ярлыки создаются"
+                            Text="{DynamicResource FeatureAuto}"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </StackPanel>
 
+                <Grid Grid.Row="3" Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{StaticResource MutedBrush}"
+                        Text="{DynamicResource Language}" />
+                    <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="LangRuButton"
+                            Click="LangRu_Click"
+                            Content="Русский"
+                            Height="28"
+                            Padding="12,0"
+                            Style="{StaticResource GhostButton}" />
+                        <Button
+                            x:Name="LangEnButton"
+                            Margin="6,0,0,0"
+                            Click="LangEn_Click"
+                            Content="English"
+                            Height="28"
+                            Padding="12,0"
+                            Style="{StaticResource GhostButton}" />
+                    </StackPanel>
+                </Grid>
+
                 <Border
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Margin="0,20,0,0"
                     VerticalAlignment="Top"
                     Background="{StaticResource CardBrush}"
@@ -127,7 +160,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="12.5"
                                 Foreground="{StaticResource TextBrush}"
-                                Text="VLC найден"
+                                Text="{DynamicResource VlcFound}"
                                 TextWrapping="Wrap" />
                         </StackPanel>
                         <TextBlock
@@ -146,7 +179,7 @@
                             FontSize="12"
                             Foreground="{StaticResource AccentBrush}"
                             Click="DownloadVlc_Click"
-                            Content="Скачать VLC с videolan.org"
+                            Content="{DynamicResource DownloadVlc}"
                             Focusable="False">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
@@ -169,7 +202,7 @@
                     </StackPanel>
                 </Border>
 
-                <Grid Grid.Row="4" Margin="0,18,0,0">
+                <Grid Grid.Row="5" Margin="0,18,0,0">
                     <TextBlock
                         x:Name="InstallPathText"
                         VerticalAlignment="Center"
@@ -180,7 +213,7 @@
                         x:Name="InstallButton"
                         HorizontalAlignment="Right"
                         Click="InstallButton_Click"
-                        Content="Установить"
+                        Content="{DynamicResource Install}"
                         Style="{StaticResource PrimaryButton}" />
                 </Grid>
             </Grid>
@@ -200,7 +233,7 @@
                     FontSize="25"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource TextBrush}"
-                    Text="Устанавливаю…" />
+                    Text="{DynamicResource Installing}" />
 
                 <TextBlock
                     x:Name="StatusText"
@@ -208,7 +241,7 @@
                     Margin="0,8,0,0"
                     FontSize="12.5"
                     Foreground="{StaticResource MutedBrush}"
-                    Text="Подготовка"
+                    Text="{DynamicResource Preparing}"
                     TextWrapping="Wrap" />
 
                 <ProgressBar
@@ -260,12 +293,12 @@
                             FontSize="25"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource TextBrush}"
-                            Text="Готово" />
+                            Text="{DynamicResource Done}" />
                         <TextBlock
                             Margin="0,4,0,0"
                             FontSize="12.5"
                             Foreground="{StaticResource MutedBrush}"
-                            Text="VLC Control установлен и готов к работе." />
+                            Text="{DynamicResource DoneSubtitle}" />
                     </StackPanel>
                 </StackPanel>
 
@@ -279,22 +312,22 @@
                         <TextBlock
                             FontSize="12.5"
                             Foreground="{StaticResource TextBrush}"
-                            Text="Как пользоваться" />
+                            Text="{DynamicResource HowTo}" />
                         <TextBlock
                             Margin="0,8,0,0"
                             FontSize="12"
                             Foreground="{StaticResource MutedBrush}"
-                            Text="• Панель: ярлык «VLC Control» на рабочем столе и в меню «Пуск»." />
+                            Text="{DynamicResource HowToPanel}" />
                         <TextBlock
                             Margin="0,4,0,0"
                             FontSize="12"
                             Foreground="{StaticResource MutedBrush}"
-                            Text="• Виджет: Win+G → кнопка виджетов → VLC Control → закрепить." />
+                            Text="{DynamicResource HowToWidget}" />
                         <TextBlock
                             Margin="0,4,0,0"
                             FontSize="12"
                             Foreground="{StaticResource MutedBrush}"
-                            Text="• Если VLC открыт без HTTP, виджет сам перезапустит его." />
+                            Text="{DynamicResource HowToHttp}" />
                     </StackPanel>
                 </Border>
 
@@ -312,12 +345,12 @@
                         x:Name="CloseFinishedButton"
                         Margin="0,0,10,0"
                         Click="CloseButton_Click"
-                        Content="Закрыть"
+                        Content="{DynamicResource Close}"
                         Style="{StaticResource GhostButton}" />
                     <Button
                         x:Name="OpenPanelButton"
                         Click="OpenPanelButton_Click"
-                        Content="Открыть панель"
+                        Content="{DynamicResource OpenPanel}"
                         Style="{StaticResource PrimaryButton}" />
                 </StackPanel>
             </Grid>
@@ -351,7 +384,7 @@
                         FontSize="25"
                         FontWeight="SemiBold"
                         Foreground="{StaticResource TextBrush}"
-                        Text="Установка не завершена" />
+                        Text="{DynamicResource ErrorTitle}" />
                 </StackPanel>
 
                 <TextBlock
@@ -366,12 +399,12 @@
                     <Button
                         Margin="0,0,10,0"
                         Click="CloseButton_Click"
-                        Content="Закрыть"
+                        Content="{DynamicResource Close}"
                         Style="{StaticResource GhostButton}" />
                     <Button
                         x:Name="RetryButton"
                         Click="RetryButton_Click"
-                        Content="Повторить"
+                        Content="{DynamicResource Retry}"
                         Style="{StaticResource PrimaryButton}" />
                 </StackPanel>
             </Grid>

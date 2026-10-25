@@ -1,0 +1,22 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="WindowTitle">Удаление VLC Control</sys:String>
+    <sys:String x:Key="UninstallTitle">Удаление VLC Control</sys:String>
+    <sys:String x:Key="UninstallQuestion">Удалить VLC Control?</sys:String>
+    <sys:String x:Key="UninstallHint">Панель, виджет Game Bar и ярлыки будут удалены. Настройки самого VLC останутся без изменений.</sys:String>
+    <sys:String x:Key="Cancel">Отмена</sys:String>
+    <sys:String x:Key="Delete">Удалить</sys:String>
+    <sys:String x:Key="Deleting">Удаляю…</sys:String>
+    <sys:String x:Key="DoneMessage">Готово. Папка будет удалена через секунду.</sys:String>
+    <sys:String x:Key="LogCleanupFailed">не удалось запустить очистку папки: </sys:String>
+    <sys:String x:Key="LogDeleteFailed">не удалось удалить папку: </sys:String>
+    <sys:String x:Key="LogStopped">остановлены запущенные компоненты</sys:String>
+    <sys:String x:Key="LogPackageRemoved">пакет виджета удалён</sys:String>
+    <sys:String x:Key="LogLoopback">исключение локальной сети снято</sys:String>
+    <sys:String x:Key="LogDevModeRestored">режим разработчика восстановлен</sys:String>
+    <sys:String x:Key="LogDevModeFailed">не удалось восстановить режим разработчика: </sys:String>
+    <sys:String x:Key="LogShortcuts">ярлыки удалены</sys:String>
+    <sys:String x:Key="LogUninstallEntry">запись в «Программы и компоненты» удалена</sys:String>
+    <sys:String x:Key="LogUninstallEntryFailed">не удалось удалить запись: </sys:String>
+</ResourceDictionary>
