@@ -18,7 +18,7 @@
 
 Готово: виджет появляется поверх игры, а панель доступна с ярлыка «VLC Control» на рабочем столе.
 
-![Виджет в Game Bar](docs/gamebar-vlc2.png)
+![Виджет в Game Bar](docs/widget-offline.png)
 
 Установщик сам:
 
