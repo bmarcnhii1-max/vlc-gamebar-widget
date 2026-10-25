@@ -1,0 +1,11 @@
+bin/
+obj/
+AppPackages/
+.vs/
+*.user
+*.suo
+*.appxsym
+*.msix
+*.msixbundle
+*.appxupload
+artifacts/

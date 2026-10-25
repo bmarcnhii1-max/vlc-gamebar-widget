@@ -1,0 +1,595 @@
+<Page
+    x:Class="VlcGameBarWidget.Widget1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VlcGameBarWidget"
+    RequestedTheme="Dark"
+    Background="Transparent"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded">
+
+    <Page.Resources>
+        <local:CurrentBarBrushConverter x:Key="CurrentBarBrush" />
+        <local:CurrentTextBrushConverter x:Key="CurrentTextBrush" />
+
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#E6FFFFFF" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="UseSystemFocusVisuals" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="Root" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#22FFFFFF" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#33FFFFFF" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.35" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Padding="{TemplateBinding Padding}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+
+        <Style x:Key="TransportButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+            <Setter Property="Width" Value="38" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
+        <Style x:Key="JumpButtonStyle" TargetType="Button" BasedOn="{StaticResource TransportButtonStyle}">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="11.5" />
+        </Style>
+
+        <Style x:Key="PlayButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="#FFFF8A00" />
+            <Setter Property="Foreground" Value="#FF141414" />
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="46" />
+            <Setter Property="CornerRadius" Value="23" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+        <Style x:Key="ChipButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="#14FFFFFF" />
+            <Setter Property="Foreground" Value="#CCFFFFFF" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="10.5" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+
+        <Style x:Key="PrimaryChipButtonStyle" TargetType="Button" BasedOn="{StaticResource ChipButtonStyle}">
+            <Setter Property="Background" Value="#FFFF8A00" />
+            <Setter Property="Foreground" Value="#FF141414" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="8">
+        <Border
+            Background="#E8151515"
+            BorderBrush="#1FFFFFFF"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="14">
+            <Grid RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Header  -->
+                <Grid Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                        <TextBlock
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="#FFFF8A00"
+                            IsTextScaleFactorEnabled="False"
+                            Text="VLC"
+                            VerticalAlignment="Center" />
+                        <Ellipse
+                            x:Name="Dot"
+                            Width="6"
+                            Height="6"
+                            Fill="#FF4CAF50"
+                            VerticalAlignment="Center" />
+                        <TextBlock
+                            x:Name="ConnText"
+                            FontSize="10.5"
+                            Foreground="#8CFFFFFF"
+                            IsTextScaleFactorEnabled="False"
+                            Text="Подключение…"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="2">
+                        <Button
+                            Click="PlaylistToggle_Click"
+                            Style="{StaticResource IconButtonStyle}"
+                            ToolTipService.ToolTip="Плейлист">
+                            <FontIcon FontSize="13" Glyph="&#xE8FD;" />
+                        </Button>
+                        <Button
+                            Click="OpenSettings_Click"
+                            Style="{StaticResource IconButtonStyle}"
+                            ToolTipService.ToolTip="Настройки">
+                            <FontIcon FontSize="13" Glyph="&#xE713;" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!--  Now playing  -->
+                <StackPanel Grid.Row="1" Spacing="1">
+                    <TextBlock
+                        x:Name="TitleText"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Foreground="#F2FFFFFF"
+                        IsTextScaleFactorEnabled="False"
+                        MaxLines="2"
+                        Text="Ничего не воспроизводится"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="SubText"
+                        FontSize="10.5"
+                        Foreground="#8CFFFFFF"
+                        IsTextScaleFactorEnabled="False"
+                        Text=""
+                        TextTrimming="CharacterEllipsis"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
+                <!--  Seek  -->
+                <StackPanel
+                    x:Name="SeekPanel"
+                    Grid.Row="2"
+                    Spacing="1">
+                    <Slider
+                        x:Name="SeekSlider"
+                        Margin="-4,0"
+                        IsThumbToolTipEnabled="False"
+                        Maximum="1"
+                        Minimum="0"
+                        PointerCaptureLost="SeekSlider_PointerCaptureLost"
+                        PointerPressed="SeekSlider_PointerPressed"
+                        PointerReleased="SeekSlider_PointerReleased"
+                        StepFrequency="1"
+                        ValueChanged="SeekSlider_ValueChanged">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="SliderTrackFill" Color="#26FFFFFF" />
+                            <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="#26FFFFFF" />
+                            <SolidColorBrush x:Key="SliderTrackValueFill" Color="#FFFF8A00" />
+                            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderThumbBackground" Color="#FFFF8A00" />
+                            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#FFFFA733" />
+                        </Slider.Resources>
+                    </Slider>
+                    <Grid Margin="0,-4,0,0">
+                        <TextBlock
+                            x:Name="TimeNow"
+                            FontSize="10"
+                            Foreground="#8CFFFFFF"
+                            IsTextScaleFactorEnabled="False"
+                            Text="0:00" />
+                        <TextBlock
+                            x:Name="TimeTotal"
+                            HorizontalAlignment="Right"
+                            FontSize="10"
+                            Foreground="#8CFFFFFF"
+                            IsTextScaleFactorEnabled="False"
+                            Text="0:00" />
+                    </Grid>
+                </StackPanel>
+
+                <!--  Transport  -->
+                <StackPanel
+                    Grid.Row="3"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="5">
+                    <Button
+                        Click="Previous_Click"
+                        Style="{StaticResource TransportButtonStyle}"
+                        ToolTipService.ToolTip="Предыдущий">
+                        <FontIcon FontSize="14" Glyph="&#xE100;" />
+                    </Button>
+                    <Button
+                        Click="Back10_Click"
+                        Content="−10"
+                        Style="{StaticResource JumpButtonStyle}"
+                        ToolTipService.ToolTip="Назад 10 секунд" />
+                    <Button
+                        x:Name="PlayButton"
+                        Click="PlayPause_Click"
+                        Style="{StaticResource PlayButtonStyle}"
+                        ToolTipService.ToolTip="Пауза / Играть">
+                        <FontIcon x:Name="PlayIcon" FontSize="16" Glyph="&#xE768;" />
+                    </Button>
+                    <Button
+                        Click="Forward10_Click"
+                        Content="+10"
+                        Style="{StaticResource JumpButtonStyle}"
+                        ToolTipService.ToolTip="Вперёд 10 секунд" />
+                    <Button
+                        Click="Next_Click"
+                        Style="{StaticResource TransportButtonStyle}"
+                        ToolTipService.ToolTip="Следующий">
+                        <FontIcon FontSize="14" Glyph="&#xE101;" />
+                    </Button>
+                </StackPanel>
+
+                <!--  Volume  -->
+                <Grid Grid.Row="4" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Width="26"
+                        Height="26"
+                        Click="Mute_Click"
+                        Style="{StaticResource IconButtonStyle}"
+                        ToolTipService.ToolTip="Выключить звук">
+                        <FontIcon x:Name="MuteIcon" FontSize="13" Glyph="&#xE767;" />
+                    </Button>
+                    <Slider
+                        x:Name="VolumeSlider"
+                        Grid.Column="1"
+                        IsThumbToolTipEnabled="False"
+                        Maximum="100"
+                        Minimum="0"
+                        PointerCaptureLost="VolumeSlider_PointerCaptureLost"
+                        PointerPressed="VolumeSlider_PointerPressed"
+                        PointerReleased="VolumeSlider_PointerReleased"
+                        StepFrequency="1"
+                        ValueChanged="VolumeSlider_ValueChanged">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="SliderTrackFill" Color="#26FFFFFF" />
+                            <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="#26FFFFFF" />
+                            <SolidColorBrush x:Key="SliderTrackValueFill" Color="#FFFF8A00" />
+                            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderThumbBackground" Color="#FFFF8A00" />
+                            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#FFFFA733" />
+                            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#FFFFA733" />
+                        </Slider.Resources>
+                    </Slider>
+                    <TextBlock
+                        x:Name="VolumeText"
+                        Grid.Column="2"
+                        Width="34"
+                        VerticalAlignment="Center"
+                        FontSize="10"
+                        Foreground="#8CFFFFFF"
+                        IsTextScaleFactorEnabled="False"
+                        Text="100%"
+                        TextAlignment="Right" />
+                </Grid>
+
+                <!--  Speed  -->
+                <Grid Grid.Row="5" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="10.5"
+                        Foreground="#8CFFFFFF"
+                        IsTextScaleFactorEnabled="False"
+                        Text="Скорость" />
+                    <StackPanel
+                        x:Name="RatePanel"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="4">
+                        <Button
+                            Click="Rate_Click"
+                            Content="0.5×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="0.5" />
+                        <Button
+                            Click="Rate_Click"
+                            Content="0.75×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="0.75" />
+                        <Button
+                            Click="Rate_Click"
+                            Content="1×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="1" />
+                        <Button
+                            Click="Rate_Click"
+                            Content="1.25×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="1.25" />
+                        <Button
+                            Click="Rate_Click"
+                            Content="1.5×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="1.5" />
+                        <Button
+                            Click="Rate_Click"
+                            Content="2×"
+                            Style="{StaticResource ChipButtonStyle}"
+                            Tag="2" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  Playlist  -->
+                <Grid
+                    x:Name="PlaylistPanel"
+                    Grid.Row="6"
+                    Margin="0,2,0,0"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock
+                            FontSize="10.5"
+                            Foreground="#8CFFFFFF"
+                            IsTextScaleFactorEnabled="False"
+                            Text="Плейлист" />
+                        <TextBlock
+                            x:Name="PlaylistCount"
+                            HorizontalAlignment="Right"
+                            FontSize="10.5"
+                            Foreground="#8CFFFFFF"
+                            IsTextScaleFactorEnabled="False"
+                            Text="0" />
+                    </Grid>
+                    <ListView
+                        x:Name="PlaylistList"
+                        Grid.Row="1"
+                        IsItemClickEnabled="True"
+                        ItemClick="Playlist_ItemClick"
+                        SelectionMode="None">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="4,0" />
+                                <Setter Property="MinHeight" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,1" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="30" ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="{Binding IsCurrent, Converter={StaticResource CurrentBarBrush}}" CornerRadius="2" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        FontSize="11.5"
+                                        Foreground="{Binding IsCurrent, Converter={StaticResource CurrentTextBrush}}"
+                                        IsTextScaleFactorEnabled="False"
+                                        Text="{Binding Name}"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#8CFFFFFF"
+                                        IsTextScaleFactorEnabled="False"
+                                        Text="{Binding DurationText}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock
+                        x:Name="PlaylistEmpty"
+                        Grid.Row="1"
+                        Margin="2,4"
+                        FontSize="11"
+                        Foreground="#66FFFFFF"
+                        IsTextScaleFactorEnabled="False"
+                        Text="Плейлист пуст"
+                        Visibility="Collapsed" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!--  Offline overlay  -->
+        <Grid
+            x:Name="OfflinePanel"
+            Background="#F2101010"
+            BorderBrush="#1FFFFFFF"
+            BorderThickness="1"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <StackPanel
+                Margin="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="6">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    FontSize="24"
+                    Foreground="#FFFF8A00"
+                    Glyph="&#xE7BA;" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="#F2FFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    Text="VLC не отвечает" />
+                <TextBlock
+                    FontSize="11"
+                    Foreground="#99FFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    Text="Запусти VLC и включи веб-интерфейс.&#x0a;Порт 8080, пароль gamebar."
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <StackPanel
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button
+                        Click="Reconnect_Click"
+                        Content="Проверить снова"
+                        Height="30"
+                        Padding="12,0"
+                        Style="{StaticResource ChipButtonStyle}" />
+                    <Button
+                        Click="OpenSettings_Click"
+                        Content="Настройки"
+                        Height="30"
+                        Padding="12,0"
+                        Style="{StaticResource ChipButtonStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!--  Settings overlay  -->
+        <Grid
+            x:Name="SettingsPanel"
+            Padding="16"
+            Background="#F7101010"
+            BorderBrush="#1FFFFFFF"
+            BorderThickness="1"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <StackPanel Spacing="8">
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="#F2FFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    Text="Настройки" />
+                <TextBlock
+                    FontSize="10.5"
+                    Foreground="#8CFFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    Text="HTTP-интерфейс VLC" />
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="HostBox"
+                        FontSize="12"
+                        Header="Адрес"
+                        PlaceholderText="127.0.0.1" />
+                    <TextBox
+                        x:Name="PortBox"
+                        Grid.Column="1"
+                        FontSize="12"
+                        Header="Порт"
+                        InputScope="Number"
+                        PlaceholderText="8080" />
+                </Grid>
+                <PasswordBox
+                    x:Name="PasswordBox"
+                    FontSize="12"
+                    Header="Пароль"
+                    PlaceholderText="gamebar" />
+                <TextBlock
+                    x:Name="SettingsStatus"
+                    MinHeight="14"
+                    FontSize="10.5"
+                    Foreground="#99FFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    TextWrapping="Wrap" />
+                <Grid Margin="0,2,0,0" ColumnSpacing="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        HorizontalAlignment="Left"
+                        Click="CheckConnection_Click"
+                        Content="Проверить"
+                        Height="30"
+                        Padding="10,0"
+                        Style="{StaticResource ChipButtonStyle}" />
+                    <Button
+                        Grid.Column="1"
+                        Click="CloseSettings_Click"
+                        Content="Отмена"
+                        Height="30"
+                        Padding="12,0"
+                        Style="{StaticResource ChipButtonStyle}" />
+                    <Button
+                        Grid.Column="2"
+                        Click="SaveSettings_Click"
+                        Content="Сохранить"
+                        Height="30"
+                        Padding="12,0"
+                        Style="{StaticResource PrimaryChipButtonStyle}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
