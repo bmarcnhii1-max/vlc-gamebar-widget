@@ -9,3 +9,7 @@ AppPackages/
 *.msixbundle
 *.appxupload
 artifacts/
+publish/
+payload.zip
+binTest*/
+src/VlcGameBarWidget/Launcher/

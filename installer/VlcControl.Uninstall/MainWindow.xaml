@@ -1,0 +1,101 @@
+<Window x:Class="VlcControl.Uninstall.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Удаление VLC Control"
+        Icon="app.ico"
+        Width="470"
+        Height="320"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display">
+
+    <Border Background="{StaticResource WindowBrush}"
+            BorderBrush="{StaticResource LineBrush}"
+            BorderThickness="1"
+            CornerRadius="14">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="34" ShadowDepth="0" Opacity="0.55" Color="Black" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="46" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
+                    <Image Source="app.ico" Width="16" Height="16" />
+                    <TextBlock
+                        Margin="9,0,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="12.5"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource TextBrush}"
+                        Text="Удаление VLC Control" />
+                </StackPanel>
+                <Button
+                    HorizontalAlignment="Right"
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Center"
+                    Click="CancelButton_Click"
+                    Content="&#xE711;"
+                    Style="{StaticResource TitleButton}" />
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="30,6,30,26">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource TextBrush}"
+                    Text="Удалить VLC Control?" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="0,12,0,0"
+                    FontSize="12.5"
+                    Foreground="{StaticResource MutedBrush}"
+                    Text="Панель, виджет Game Bar и ярлыки будут удалены. Настройки самого VLC останутся без изменений."
+                    TextWrapping="Wrap" />
+
+                <TextBlock
+                    x:Name="StatusText"
+                    Grid.Row="2"
+                    Margin="0,16,0,0"
+                    FontSize="12"
+                    Foreground="{StaticResource AccentBrush}"
+                    Text=""
+                    TextWrapping="Wrap" />
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button
+                        x:Name="CancelButton"
+                        Margin="0,0,10,0"
+                        Click="CancelButton_Click"
+                        Content="Отмена"
+                        Style="{StaticResource GhostButton}" />
+                    <Button
+                        x:Name="DeleteButton"
+                        Click="DeleteButton_Click"
+                        Content="Удалить"
+                        Style="{StaticResource DangerButton}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

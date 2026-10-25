@@ -112,6 +112,66 @@
             <Setter Property="Foreground" Value="#FF141414" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
+
+        <Style x:Key="WidePrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFF8A00" />
+            <Setter Property="Foreground" Value="#FF141414" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="UseSystemFocusVisuals" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="Root"
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="0.88"
+                                                Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="Root"
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="0.7"
+                                                Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="Root"
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="0.35"
+                                                Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid Padding="8">
@@ -466,10 +526,11 @@
             CornerRadius="12"
             Visibility="Collapsed">
             <StackPanel
-                Margin="24"
+                Width="288"
+                Margin="20"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Spacing="6">
+                Spacing="7">
                 <FontIcon
                     HorizontalAlignment="Center"
                     FontSize="24"
@@ -486,14 +547,24 @@
                     FontSize="11"
                     Foreground="#99FFFFFF"
                     IsTextScaleFactorEnabled="False"
-                    Text="Запусти VLC и включи веб-интерфейс.&#x0a;Порт 8080, пароль gamebar."
+                    Text="Одна кнопка запустит VLC с нужными настройками. Если он уже открыт без HTTP — перезапустит."
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
-                <StackPanel
+                <Button
                     Margin="0,4,0,0"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="8">
+                    HorizontalAlignment="Stretch"
+                    Click="LaunchVlc_Click"
+                    Content="Запустить VLC"
+                    Style="{StaticResource WidePrimaryButtonStyle}" />
+                <TextBlock
+                    x:Name="LaunchStatus"
+                    MinHeight="14"
+                    FontSize="10.5"
+                    Foreground="#99FFFFFF"
+                    IsTextScaleFactorEnabled="False"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="8">
                     <Button
                         Click="Reconnect_Click"
                         Content="Проверить снова"

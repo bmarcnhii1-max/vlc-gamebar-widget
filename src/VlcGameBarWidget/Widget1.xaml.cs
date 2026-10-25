@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
@@ -17,12 +18,12 @@ namespace VlcGameBarWidget
 {
     public sealed partial class Widget1 : Page
     {
-        private static readonly SolidColorBrush AccentBrush = new SolidColorBrush(Color.FromArgb(255, 255, 138, 0));
-        private static readonly SolidColorBrush ChipBrush = new SolidColorBrush(Color.FromArgb(20, 255, 255, 255));
-        private static readonly SolidColorBrush ChipTextBrush = new SolidColorBrush(Color.FromArgb(204, 255, 255, 255));
-        private static readonly SolidColorBrush ChipActiveTextBrush = new SolidColorBrush(Color.FromArgb(255, 20, 20, 20));
-        private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Color.FromArgb(255, 76, 175, 80));
-        private static readonly SolidColorBrush RedBrush = new SolidColorBrush(Color.FromArgb(255, 229, 72, 77));
+        private static readonly Color AccentColor = Color.FromArgb(255, 255, 138, 0);
+        private static readonly Color ChipColor = Color.FromArgb(20, 255, 255, 255);
+        private static readonly Color ChipTextColor = Color.FromArgb(204, 255, 255, 255);
+        private static readonly Color ChipActiveTextColor = Color.FromArgb(255, 20, 20, 20);
+        private static readonly Color GreenColor = Color.FromArgb(255, 76, 175, 80);
+        private static readonly Color RedColor = Color.FromArgb(255, 229, 72, 77);
 
         private readonly VlcClient _client = new VlcClient();
         private readonly ObservableCollection<VlcPlaylistItem> _playlist = new ObservableCollection<VlcPlaylistItem>();
@@ -48,13 +49,13 @@ namespace VlcGameBarWidget
         {
             InitializeComponent();
             PlaylistList.ItemsSource = _playlist;
-            UpdateRateButtons(1);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             if (_loaded) return;
             _loaded = true;
+            UpdateRateButtons(1);
             LoadSettings();
             StartPolling();
         }
@@ -137,7 +138,7 @@ namespace VlcGameBarWidget
             _status = status;
             _failures = 0;
             OfflinePanel.Visibility = Visibility.Collapsed;
-            Dot.Fill = GreenBrush;
+            Dot.Fill = new SolidColorBrush(GreenColor);
             ConnText.Text = status.State == "playing" ? "Играет" : status.State == "paused" ? "Пауза" : "Стоп";
 
             TitleText.Text = string.IsNullOrWhiteSpace(status.DisplayTitle)
@@ -220,7 +221,7 @@ namespace VlcGameBarWidget
                 return;
             }
 
-            Dot.Fill = RedBrush;
+            Dot.Fill = new SolidColorBrush(RedColor);
             ConnText.Text = "Нет связи";
         }
 
@@ -228,7 +229,7 @@ namespace VlcGameBarWidget
         {
             _failures = 2;
             _status = null;
-            Dot.Fill = RedBrush;
+            Dot.Fill = new SolidColorBrush(RedColor);
             ConnText.Text = "Нет связи";
             TitleText.Text = "VLC не отвечает";
             SubText.Text = string.Empty;
@@ -309,8 +310,8 @@ namespace VlcGameBarWidget
                 }
 
                 var active = Math.Abs(rate - currentRate) < 0.06;
-                button.Background = active ? AccentBrush : ChipBrush;
-                button.Foreground = active ? ChipActiveTextBrush : ChipTextBrush;
+                button.Background = new SolidColorBrush(active ? AccentColor : ChipColor);
+                button.Foreground = new SolidColorBrush(active ? ChipActiveTextColor : ChipTextColor);
             }
         }
 
@@ -552,6 +553,36 @@ namespace VlcGameBarWidget
         private async void Reconnect_Click(object sender, RoutedEventArgs e)
         {
             await RefreshStatusOnceAsync();
+        }
+
+        private async void LaunchVlc_Click(object sender, RoutedEventArgs e)
+        {
+            App.LogLine("LaunchVlc clicked");
+            LaunchStatus.Text = "Запускаю VLC…";
+
+            try
+            {
+                await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
+            }
+            catch (Exception ex)
+            {
+                LaunchStatus.Text = "Не удалось запустить: " + ex.Message;
+                App.LogLine("LaunchVlc failed: " + ex);
+                return;
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                await Task.Delay(600);
+                await RefreshStatusOnceAsync();
+                if (_status != null)
+                {
+                    LaunchStatus.Text = string.Empty;
+                    return;
+                }
+            }
+
+            LaunchStatus.Text = "VLC не ответил. Проверь, что он установлен, и нажми ещё раз.";
         }
     }
 }
