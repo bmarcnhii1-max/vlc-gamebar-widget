@@ -13,7 +13,7 @@
 
 | Panel | Game Bar widget | Installer |
 | --- | --- | --- |
-| ![Panel](docs/panel.png) | ![Widget](docs/widget.png) | ![Installer](docs/setup-welcome.png) |
+| ![Panel](docs/panel-en.png) | ![Widget](docs/widget-en.png) | ![Installer](docs/setup-en.png) |
 
 ## Quick start
 
